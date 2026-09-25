@@ -26,7 +26,7 @@ export function labelTypeOrg(type: string | null | undefined): string {
   return type === "nation" ? "Nation" : "Entreprise";
 }
 
-export function affiliationActive<T extends { dateFin: Date | null; organisation: { type: string } }>(
+export function affiliationActive<T extends { dateFin: Date | string | null; organisation: { type: string } }>(
   affiliations: T[],
   type: TypeOrgValue
 ): T | undefined {
