@@ -8,10 +8,11 @@ datasource db {
 }
 
 enum RoleEmploye {
-  stagiaire
+  admin
   employe
   co_patron
   patron
+  stagiaire
 }
 
 enum RoleSite {
@@ -24,6 +25,18 @@ enum RoleSite {
 enum TypeClient {
   particulier
   entreprise
+  organisme
+}
+
+enum TypeOrganisation {
+  entreprise
+  nation
+}
+
+enum ContexteCommande {
+  civil
+  entreprise
+  nation
 }
 
 enum CategorieProduit {
@@ -65,7 +78,7 @@ model Entreprise {
   nom          String
   dateCreation DateTime    @default(now())
   clients      Client[]
-  gringotts    Gringotts?
+  banque       Banque?
   evenements   Evenement[]
 }
 
@@ -74,6 +87,27 @@ model EntrepriseCliente {
   nom       String
   createdAt DateTime @default(now())
   clients   Client[]
+}
+
+model Organisation {
+  id           Int              @id @default(autoincrement())
+  nom          String
+  type         TypeOrganisation
+  createdAt    DateTime         @default(now())
+  affiliations Affiliation[]
+  ventes       Vente[]
+}
+
+model Affiliation {
+  id             Int          @id @default(autoincrement())
+  clientId       Int
+  client         Client       @relation(fields: [clientId], references: [id])
+  organisationId Int
+  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  dateDebut      DateTime     @default(now())
+  dateFin        DateTime?
+
+  @@index([clientId, dateFin])
 }
 
 model Client {
@@ -88,6 +122,7 @@ model Client {
   createdAt           DateTime           @default(now())
   ventes              Vente[]
   evenements          EvenementClient[]
+  affiliations        Affiliation[]
 }
 
 model Employe {
@@ -105,26 +140,31 @@ model Employe {
   ventes                Vente[]
   primes                Prime[]
   rolesHistorique       HistoriqueRole[]
-  transactions          TransactionGringotts[]
+  transactions          TransactionBanque[]
   utilisateur           Utilisateur?
   restocks              Restock[]              
   primesAttribuees      Prime[]                @relation("PrimeAttribuePar")
   evenementsResponsable Evenement[]            @relation("EvenementResponsable")
   evenements            EvenementEmploye[]     @relation("EvenementEmployes")
+  paiementsSalaire      PaiementSalaire[]
 }
 
 model Contrat {
-  id               Int       @id @default(autoincrement())
-  employeId        Int
-  employe          Employe   @relation(fields: [employeId], references: [id])
-  typeContrat      String
-  dateDebut        DateTime
-  dateFin          DateTime?
-  salaire          Float?
-  pourcentagePrime Float?
-  commentaire      String?
-  estActif         Boolean   @default(true)
-  createdAt        DateTime  @default(now())
+  id                     Int       @id @default(autoincrement())
+  employeId              Int
+  employe                Employe   @relation(fields: [employeId], references: [id])
+  typeContrat            String
+  dateDebut              DateTime
+  dateFin                DateTime?
+  salaire                Float?
+  pourcentagePrime       Float?
+  commentaire            String?
+  articles               Json?
+  signatairePatronPrenom String?
+  signatairePatronNom    String?
+  signataireRole         String?
+  estActif               Boolean   @default(true)
+  createdAt              DateTime  @default(now())
 }
 
 model Produit {
@@ -142,17 +182,20 @@ model Produit {
 }
 
 model Vente {
-  id           Int                    @id @default(autoincrement())
-  employeId    Int
-  employe      Employe                @relation(fields: [employeId], references: [id])
-  typeClient   String?
-  clientId     Int
-  client       Client                 @relation(fields: [clientId], references: [id])
-  montantTotal Float                  @default(0)
-  statut       StatutVente            @default(en_cours)
-  dateVente    DateTime               @default(now())
-  produits     VenteProduit[]
-  transactions TransactionGringotts[]
+  id               Int                    @id @default(autoincrement())
+  employeId        Int
+  employe          Employe                @relation(fields: [employeId], references: [id])
+  typeClient       String?
+  clientId         Int
+  client           Client                 @relation(fields: [clientId], references: [id])
+  contexteCommande ContexteCommande       @default(civil)
+  organisationId   Int?
+  organisation     Organisation?          @relation(fields: [organisationId], references: [id])
+  montantTotal     Float                  @default(0)
+  statut           StatutVente            @default(en_cours)
+  dateVente        DateTime               @default(now())
+  produits         VenteProduit[]
+  transactions     TransactionBanque[]
 }
 
 model VenteProduit {
@@ -166,7 +209,7 @@ model VenteProduit {
   totalLigne   Float
 }
 
-model Gringotts {
+model Banque {
   id           Int        @id @default(autoincrement())
   entrepriseId Int        @unique
   entreprise   Entreprise @relation(fields: [entrepriseId], references: [id])
@@ -174,7 +217,7 @@ model Gringotts {
   updatedAt    DateTime   @updatedAt
 }
 
-model TransactionGringotts {
+model TransactionBanque {
   id              Int      @id @default(autoincrement())
   typeTransaction String?
   montant         Float?
@@ -275,4 +318,15 @@ model RestockProduit {
   produit      Produit  @relation(fields: [produitId], references: [id])
   quantite     Int
   prixAchatUnitaire Float
+}
+
+model PaiementSalaire {
+  id           Int      @id @default(autoincrement())
+  employeId    Int
+  employe      Employe  @relation(fields: [employeId], references: [id])
+  semaineDebut DateTime
+  montant      Float
+  createdAt    DateTime @default(now())
+
+  @@unique([employeId, semaineDebut])
 }

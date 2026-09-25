@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db/prisma";
 import Link from "next/link";
 import { fmtDate } from "@/utils/formatDate";
+import { fmtArgent } from "@/utils/fmtArgent";
 
 export const dynamic = "force-dynamic";
 
@@ -20,17 +21,17 @@ export default async function HistoriqueRestocksPage() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-xl font-semibold text-white">Historique des Restocks</h1>
-          <p className="text-sm text-white/40">Suivi des réapprovisionnements physiques sans impact Gringotts</p>
+          <p className="text-sm text-white/40">Suivi des réapprovisionnements physiques, sans impact sur la banque</p>
         </div>
             <Link
               href="/dashboard/stock/restock"
-              className="flex items-center gap-2 bg-[#2a2250] hover:bg-[#342b6e] border border-[#3d3580] text-[#c4bbff] text-sm font-medium px-4 py-2.5 rounded-lg transition-colors"
+              className="flex items-center gap-2 bg-[#6b3e22] hover:bg-[#8a532c] border border-[#a06b3c] text-[#f3d7a5] text-sm font-medium px-4 py-2.5 rounded-lg transition-colors"
             >
               Restock
             </Link>
       </div>
 
-      <div className="bg-[#16162a] border border-white/10 rounded-xl overflow-hidden">
+      <div className="bg-[#2b1d14] border border-white/10 rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -52,19 +53,19 @@ export default async function HistoriqueRestocksPage() {
                     <td className="p-4 text-white/60">
                       {fmtDate(r.dateRestock, { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })}
                     </td>
-                    <td className="p-4 font-medium text-[#c4bbff]">
+                    <td className="p-4 font-medium text-[#f3d7a5]">
                       {r.employe.prenom} {r.employe.nom}
                     </td>
                     <td className="p-4 space-y-1">
                       {r.produits.map((p) => (
                         <div key={p.id} className="text-xs text-white/60">
                           • <span className="text-white font-medium">{p.produit.nom}</span> (x{p.quantite}) 
-                          <span className="text-white/30"> — acheté à ${p.prixAchatUnitaire}/u</span>
+                          <span className="text-white/30"> — acheté à {fmtArgent(p.prixAchatUnitaire)}/u</span>
                         </div>
                       ))}
                     </td>
                     <td className="p-4 text-right font-semibold text-emerald-400">
-                      ${r.valeurTotale.toFixed(0)}
+                      {fmtArgent(r.valeurTotale)}
                     </td>
                   </tr>
                 ))

@@ -2,6 +2,7 @@
 
 import { signIn } from "next-auth/react";
 import { useState } from "react";
+import { NOM_ENTREPRISE } from "@/lib/branding";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -20,31 +21,32 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-[#0f0f1a] px-4">
-      <div className="w-full max-w-sm bg-[#16162a] border border-white/10 rounded-xl p-8">
-
-        <div className="flex items-center gap-3 mb-8">
-          <div>
-            <p className="text-white font-medium text-base leading-tight">Les 3 balais</p>
-            <p className="text-white/40 text-xs">Espace administration</p>
-          </div>
+    <main className="tavern-scene relative min-h-screen flex items-center justify-center px-4 overflow-hidden">
+      <img
+        src="/textures/tavern-hall.jpg"
+        alt=""
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+      />
+      <div className="pointer-events-none absolute inset-0 bg-[#120c08]/30" />
+      <div className="tavern-card relative z-10 w-full max-w-sm rounded-2xl p-8 shadow-[0_20px_70px_rgba(0,0,0,0.55)]">
+        <div className="mb-8">
+          <p className="font-display text-[#f3d7a5] text-2xl leading-tight">{NOM_ENTREPRISE}</p>
+          <p className="text-[#f4e6cf]/45 text-xs mt-1 tracking-wide">Le livre de comptes de l&apos;auberge</p>
         </div>
 
-        {/* Username */}
         <div className="mb-4">
-          <label className="block text-xs text-white/50 mb-1.5">Nom d&apos;utilisateur</label>
+          <label className="block text-xs text-[#f4e6cf]/55 mb-1.5">Nom d&apos;utilisateur</label>
           <input
             type="text"
             placeholder="ex: johndoe"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full bg-[#0f0f1a] border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-[#a89af9]/50"
+            className="input-dark"
           />
         </div>
 
-        {/* Password */}
         <div className="mb-6">
-          <label className="block text-xs text-white/50 mb-1.5">Mot de passe</label>
+          <label className="block text-xs text-[#f4e6cf]/55 mb-1.5">Mot de passe</label>
           <div className="relative">
             <input
               type={showPwd ? "text" : "password"}
@@ -52,26 +54,24 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-              className="w-full bg-[#0f0f1a] border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-[#a89af9]/50 pr-10"
+              className="input-dark pr-10"
             />
             <button
               onClick={() => setShowPwd(!showPwd)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 text-xs"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#f4e6cf]/35 hover:text-[#f4e6cf]/70 text-xs"
             >
               {showPwd ? "Cacher" : "Voir"}
             </button>
           </div>
         </div>
 
-        {/* Submit */}
         <button
           onClick={handleLogin}
           disabled={loading}
-          className="w-full bg-[#2a2250] hover:bg-[#342b6e] border border-[#3d3580] text-[#c4bbff] font-medium text-sm rounded-lg py-2.5 transition-colors disabled:opacity-50"
+          className="w-full bg-[#6b3e22] hover:bg-[#8a532c] border border-[#a06b3c] text-[#f3d7a5] font-medium text-sm rounded-lg py-2.5 transition-colors disabled:opacity-50"
         >
-          {loading ? "Connexion..." : "Se connecter"}
+          {loading ? "Connexion..." : "Pousser la porte"}
         </button>
-
       </div>
     </main>
   );

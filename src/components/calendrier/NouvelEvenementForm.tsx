@@ -1,6 +1,7 @@
 "use client";
 
-import { Client, Employe, Produit } from "@prisma/client";
+import { Employe, Produit } from "@prisma/client";
+import type { ClientAvecAffiliations } from "@/types/client";
 import FormClients from "../clients/FormClients";
 import NouveauClientModal from "../clients/NouveauClientModal";
 import FormEquipe from "../employes/FormEquipe";
@@ -15,9 +16,9 @@ type SelectedClient = { clientId: number; nbPersonnes: number; commentaire: stri
 type ConsoItem = { produitId: number; nom: string; quantite: number; prixUnitaire: number };
 
 // --- COMPOSANT CONTENEUR PRINCIPAL ---
-export default function NouvelEvenementForm({ employes, clients: initialClients, produits }: { employes: Employe[]; clients: Client[]; produits: Produit[] }) {
+export default function NouvelEvenementForm({ employes, clients: initialClients, produits }: { employes: Employe[]; clients: ClientAvecAffiliations[]; produits: Produit[] }) {
   const router = useRouter();
-  const [clients, setClients] = useState<Client[]>(initialClients);
+  const [clients, setClients] = useState<ClientAvecAffiliations[]>(initialClients);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -38,7 +39,7 @@ export default function NouvelEvenementForm({ employes, clients: initialClients,
     setSelectedClients((prev) => prev.some((c) => c.clientId === id) ? prev : [...prev, { clientId: id, nbPersonnes: 1, commentaire: "" }]);
   };
 
-  const handleClientCreated = (c: Client) => {
+  const handleClientCreated = (c: ClientAvecAffiliations) => {
     setClients((p) => [...p, c]);
     handleSelectClient(c.id);
     setShowModal(false);
@@ -81,7 +82,7 @@ export default function NouvelEvenementForm({ employes, clients: initialClients,
         {error && <p className="text-red-400 text-sm">{error}</p>}
 
         <div className="flex gap-3">
-          <button onClick={handleSubmit} disabled={loading} className="flex-1 bg-[#2a2250] hover:bg-[#342b6e] border border-[#3d3580] text-[#c4bbff] text-sm font-medium py-2.5 rounded-lg transition-colors disabled:opacity-50">
+          <button onClick={handleSubmit} disabled={loading} className="flex-1 bg-[#6b3e22] hover:bg-[#8a532c] border border-[#a06b3c] text-[#f3d7a5] text-sm font-medium py-2.5 rounded-lg transition-colors disabled:opacity-50">
             {loading ? "Création..." : "Créer l'événement"}
           </button>
           <button type="button" onClick={() => router.back()} className="px-4 text-sm text-white/40 hover:text-white border border-white/10 rounded-lg transition-colors">

@@ -22,7 +22,7 @@ export default async function CalendrierPage() {
         </div>
         <Link
           href="/dashboard/calendrier/nouveau"
-          className="flex items-center gap-2 bg-[#2a2250] hover:bg-[#342b6e] border border-[#3d3580] text-[#c4bbff] text-sm font-medium px-4 py-2.5 rounded-lg transition-colors"
+          className="flex items-center gap-2 bg-[#6b3e22] hover:bg-[#8a532c] border border-[#a06b3c] text-[#f3d7a5] text-sm font-medium px-4 py-2.5 rounded-lg transition-colors"
         >
           + Nouvel événement
         </Link>

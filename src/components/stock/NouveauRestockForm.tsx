@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { fmtArgent } from "@/utils/fmtArgent";
 
 interface Produit {
   id: number;
@@ -90,7 +91,7 @@ export default function NouveauRestockForm({ produits }: { produits: Produit[] }
         </div>
       )}
 
-      <div className="bg-[#16162a] border border-white/10 rounded-xl overflow-hidden p-6 space-y-4">
+      <div className="bg-[#2b1d14] border border-white/10 rounded-xl overflow-hidden p-6 space-y-4">
         <h2 className="text-xs font-semibold text-white/30 uppercase tracking-wider mb-2">
           Articles à réapprovisionner
         </h2>
@@ -112,9 +113,9 @@ export default function NouveauRestockForm({ produits }: { produits: Produit[] }
                   className="w-full bg-[#111122] border border-white/10 rounded-lg p-2.5 text-white text-sm focus:outline-none focus:border-white/20 transition-colors"
                   required
                 >
-                  <option value="" className="bg-[#16162a]">Choisir un produit...</option>
+                  <option value="" className="bg-[#2b1d14]">Choisir un produit...</option>
                   {produits.map((p) => (
-                    <option key={p.id} value={p.id} className="bg-[#16162a]">
+                    <option key={p.id} value={p.id} className="bg-[#2b1d14]">
                       {p.nom} ({p.categorie === "plat" ? "Plat" : "Boisson"}) — Stock : {p.stock}
                     </option>
                   ))}
@@ -138,7 +139,7 @@ export default function NouveauRestockForm({ produits }: { produits: Produit[] }
               <div className="w-full sm:w-32 text-left sm:text-right py-2 sm:py-0">
                 <span className="block text-xs text-white/30 mb-1">Coût indicatif</span>
                 <span className="text-sm font-medium text-white/80">
-                  {produitSelectionne ? `$${(produitSelectionne.prixAchat * ligne.quantite).toFixed(0)}` : "$0"}
+                  {produitSelectionne ? fmtArgent(produitSelectionne.prixAchat * ligne.quantite) : fmtArgent(0)}
                 </span>
               </div>
 
@@ -159,17 +160,17 @@ export default function NouveauRestockForm({ produits }: { produits: Produit[] }
         <button
           type="button"
           onClick={ajouterLigne}
-          className="flex items-center gap-2 bg-[#2a2250] hover:bg-[#342b6e] border border-[#3d3580] text-[#c4bbff] text-xs font-medium px-4 py-2 rounded-lg transition-colors mt-2"
+          className="flex items-center gap-2 bg-[#6b3e22] hover:bg-[#8a532c] border border-[#a06b3c] text-[#f3d7a5] text-xs font-medium px-4 py-2 rounded-lg transition-colors mt-2"
         >
           + Ajouter un produit
         </button>
       </div>
 
-      {/* Footer de validation nettoyé de Gringotts */}
-      <div className="bg-[#16162a] border border-white/10 rounded-xl p-6 flex flex-col sm:flex-row gap-4 justify-between items-center">
+      {/* Footer de validation */}
+      <div className="bg-[#2b1d14] border border-white/10 rounded-xl p-6 flex flex-col sm:flex-row gap-4 justify-between items-center">
         <div>
           <span className="text-xs text-white/40 block mb-0.5">Valeur totale de la commande</span>
-          <span className="text-2xl font-semibold text-[#c4bbff]">${valeurTotalRestock.toFixed(0)}</span>
+          <span className="text-2xl font-semibold text-[#f3d7a5]">{fmtArgent(valeurTotalRestock)}</span>
         </div>
         
         <div className="flex items-center gap-3 w-full sm:w-auto">

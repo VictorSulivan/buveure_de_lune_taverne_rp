@@ -54,7 +54,7 @@ export default function EvenementActions({ id, statut }: { id: number; statut: s
           <input value={commentaire} onChange={(e) => setCommentaire(e.target.value)}
             className="input-dark flex-1 text-xs" placeholder="Ajouter un commentaire..." />
           <button onClick={saveComment} disabled={loading}
-            className="text-xs px-3 py-1.5 bg-[#2a2250] border border-[#3d3580] text-[#c4bbff] rounded-lg">
+            className="text-xs px-3 py-1.5 bg-[#6b3e22] border border-[#a06b3c] text-[#f3d7a5] rounded-lg">
             OK
           </button>
         </div>

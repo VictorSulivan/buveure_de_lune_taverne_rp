@@ -1,26 +1,145 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ink: #f4e6cf;
+  --wood-deep: #1c140e;
+  --wood-panel: #2b1d14;
+  --wood-raised: #3d2818;
+  --ember: #6b3e22;
+  --ember-hover: #8a532c;
+  --amber-edge: #a06b3c;
+  --honey: #e4b56a;
+  --cream: #f3d7a5;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--wood-deep);
+  --color-foreground: var(--ink);
+  --font-sans: var(--font-source-sans);
+  --font-display: var(--font-fraunces);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  min-height: 100%;
+  color: var(--ink);
+  background-color: var(--wood-deep);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-source-sans), "Segoe UI", sans-serif;
+}
+
+h1,
+h2,
+.font-display {
+  font-family: var(--font-fraunces), Georgia, serif;
+}
+
+.input-dark {
+  width: 100%;
+  background: rgba(16, 10, 7, 0.72);
+  border: 1px solid rgba(240, 201, 136, 0.16);
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  color: #f4e6cf;
+  background-image: url("/textures/wood-table.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-blend-mode: multiply;
+}
+
+.input-dark::placeholder {
+  color: rgba(244, 230, 207, 0.28);
+}
+
+.input-dark:focus {
+  outline: none;
+  border-color: rgba(228, 181, 106, 0.55);
+}
+
+.tavern-scene {
+  position: relative;
+  isolation: isolate;
+  background-color: #120c08;
+}
+
+.tavern-wood {
+  background-color: #2b1d14;
+  background-image:
+    linear-gradient(90deg, rgba(12, 8, 6, 0.18), rgba(12, 8, 6, 0.08) 45%, rgba(12, 8, 6, 0.28)),
+    url("/textures/wood-planks.jpg");
+  background-size: auto, cover;
+  background-position: center;
+}
+
+.tavern-table {
+  background-color: transparent;
+  background-image:
+    linear-gradient(180deg, rgba(16, 10, 7, 0.22), rgba(16, 10, 7, 0.38));
+}
+
+.tavern-app .rounded-xl,
+.tavern-app .rounded-2xl {
+  background-color: rgba(28, 18, 12, 0.58) !important;
+  background-image:
+    linear-gradient(180deg, rgba(36, 24, 16, 0.42), rgba(22, 14, 10, 0.55)),
+    url("/textures/wood-table.jpg");
+  background-size: auto, cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  backdrop-filter: blur(6px);
+}
+
+.tavern-card {
+  background-color: rgba(28, 18, 12, 0.55);
+  background-image:
+    linear-gradient(180deg, rgba(36, 24, 16, 0.35), rgba(22, 14, 10, 0.5)),
+    url("/textures/wood-planks.jpg");
+  background-size: auto, cover;
+  border: 1px solid rgba(228, 181, 106, 0.22);
+  backdrop-filter: blur(8px);
+}
+
+.parchemin {
+  font-family: var(--font-im-fell), "Times New Roman", serif;
+  color: #3b2414;
+  background-color: #f3e2b8;
+  background-image:
+    radial-gradient(ellipse at 12% 8%, rgba(120, 70, 20, 0.1), transparent 42%),
+    radial-gradient(ellipse at 88% 92%, rgba(80, 45, 15, 0.16), transparent 46%),
+    radial-gradient(ellipse at 70% 20%, rgba(160, 110, 40, 0.08), transparent 40%),
+    linear-gradient(180deg, #f7e7c4 0%, #edd4a0 55%, #e4c48a 100%);
+  border: 14px solid #5a3a1c;
+  box-shadow:
+    inset 0 0 0 3px #c9a25a,
+    inset 0 0 70px rgba(90, 50, 15, 0.18);
+}
+
+.parchemin-titre {
+  font-family: var(--font-cinzel), Georgia, serif;
+}
+
+.parchemin-signature {
+  font-family: var(--font-signature), cursive;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .parchemin,
+  .parchemin * {
+    visibility: visible;
+  }
+
+  .parchemin {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    box-shadow: none;
+  }
 }

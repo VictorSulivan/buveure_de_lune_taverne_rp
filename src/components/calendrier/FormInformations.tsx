@@ -11,14 +11,14 @@ interface EvenementForm {
 
 export default function FormInformations({ form, onChange }: { form: EvenementForm; onChange: (key: string, val: string) => void }) {
   return (
-    <div className="bg-[#16162a] border border-white/10 rounded-xl p-5 space-y-4">
+    <div className="bg-[#2b1d14] border border-white/10 rounded-xl p-5 space-y-4">
       <p className="text-xs text-white/40 uppercase tracking-widest">Informations</p>
       <div>
         <label className="block text-xs text-white/40 mb-1.5">Type</label>
         <div className="grid grid-cols-2 gap-2">
           {[{ v: "reservation", l: "📋  Réservation" }, { v: "soiree", l: "🎉  Soirée" }].map(({ v, l }) => (
             <button key={v} type="button" onClick={() => onChange("type", v)}
-              className={`py-2.5 rounded-lg text-sm border transition-colors ${form.type === v ? "bg-[#2a2250] border-[#3d3580] text-[#c4bbff]" : "bg-[#0f0f1a] border-white/10 text-white/40 hover:text-white"}`}>
+              className={`py-2.5 rounded-lg text-sm border transition-colors ${form.type === v ? "bg-[#6b3e22] border-[#a06b3c] text-[#f3d7a5]" : "bg-[#1c140e] border-white/10 text-white/40 hover:text-white"}`}>
               {l}
             </button>
           ))}

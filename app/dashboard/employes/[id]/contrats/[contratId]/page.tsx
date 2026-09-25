@@ -2,13 +2,17 @@ import { prisma } from "@/lib/db/prisma";
 import { notFound } from "next/navigation";
 import ContratPDF from "@/components/contrats/ContratPDF";
 import Link from "next/link";
+import { NOM_ENTREPRISE } from "@/lib/branding";
 
 export default async function ContratPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string; contratId: string }>;
+  searchParams: Promise<{ download?: string }>;
 }) {
   const { id, contratId } = await params;
+  const { download } = await searchParams;
 
   const [employe, contrat, entreprise] = await Promise.all([
     prisma.employe.findUnique({ where: { id: parseInt(id) } }),
@@ -34,6 +38,7 @@ export default async function ContratPage({
       </div>
 
       <ContratPDF
+        autoDownload={download === "1"}
         employe={{
           nom: employe.nom,
           prenom: employe.prenom,
@@ -48,8 +53,12 @@ export default async function ContratPage({
           salaire: contrat.salaire,
           pourcentagePrime: contrat.pourcentagePrime,
           commentaire: contrat.commentaire,
+          articles: contrat.articles,
+          signatairePatronPrenom: contrat.signatairePatronPrenom,
+          signatairePatronNom: contrat.signatairePatronNom,
+          signataireRole: contrat.signataireRole,
         }}
-        entreprise={entreprise?.nom ?? "Les 3 Balais"}
+        entreprise={entreprise?.nom ?? NOM_ENTREPRISE}
       />
     </div>
   );

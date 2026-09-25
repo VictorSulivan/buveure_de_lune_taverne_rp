@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/db/prisma";
-import bcrypt from "bcrypt";
+import { prisma } from "../lib/db/prisma";
+import bcrypt from "bcryptjs";
 
 async function main() {
   const hash = await bcrypt.hash("admin123", 10);
@@ -24,4 +24,4 @@ async function main() {
   console.log("Admin créé");
 }
 
-main();
+main().catch(console.error).finally(() => prisma.$disconnect());

@@ -9,9 +9,26 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
   const { id } = await params;
   const body = await req.json();
 
+  const data: {
+    nom?: string;
+    categorie?: "plat" | "boisson";
+    stock?: number;
+    prixAchat?: number;
+    prixVente?: number;
+    description?: string | null;
+    actif?: boolean;
+  } = {};
+  if (typeof body.nom === "string") data.nom = body.nom;
+  if (body.categorie === "plat" || body.categorie === "boisson") data.categorie = body.categorie;
+  if (body.stock != null) data.stock = Number(body.stock);
+  if (body.prixAchat != null) data.prixAchat = Number(body.prixAchat);
+  if (body.prixVente != null) data.prixVente = Number(body.prixVente);
+  if (body.description !== undefined) data.description = body.description || null;
+  if (typeof body.actif === "boolean") data.actif = body.actif;
+
   const produit = await prisma.produit.update({
     where: { id: parseInt(id) },
-    data: body,
+    data,
   });
   return NextResponse.json(produit);
 }

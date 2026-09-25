@@ -4,6 +4,8 @@ import NouveauContratForm from "@/components/employes/NouveauContratForm";
 import ContratActions from "@/components/employes/ContratActions";
 import Link from "next/link";
 import { fmtDate } from "@/utils/formatDate";
+import { fmtArgent } from "@/utils/fmtArgent";
+import { COULEUR_GRADE } from "@/lib/grades";
 
 export default async function ContratsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -15,11 +17,17 @@ export default async function ContratsPage({ params }: { params: Promise<{ id: s
 
   if (!employe) notFound();
 
+  const representants = await prisma.employe.findMany({
+    where: { actif: true, role: { in: ["patron", "co_patron"] }, id: { not: employe.id } },
+    select: { id: true, prenom: true, nom: true, role: true },
+    orderBy: [{ role: "desc" }, { nom: "asc" }],
+  });
+
   const typeColor: Record<string, string> = {
-    CDI:       "bg-green-500/10 text-green-400 border-green-500/20",
-    "Co-Patron":       "bg-blue-500/10 text-blue-400 border-blue-500/20",
-    Stage:     "bg-orange-500/10 text-orange-400 border-orange-500/20",
-    Patron: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+    Admin: COULEUR_GRADE.admin,
+    Employé: COULEUR_GRADE.employe,
+    "Co-Patron": COULEUR_GRADE.co_patron,
+    Patron: COULEUR_GRADE.patron,
   };
 
   return (
@@ -33,9 +41,12 @@ export default async function ContratsPage({ params }: { params: Promise<{ id: s
         <h1 className="text-2xl font-medium text-white">Contrats</h1>
       </div>
 
-      <NouveauContratForm employeId={employe.id} />
+      <NouveauContratForm
+        employe={{ id: employe.id, prenom: employe.prenom, nom: employe.nom, role: employe.role }}
+        representants={representants}
+      />
 
-      <div className="bg-[#16162a] border border-white/10 rounded-xl overflow-hidden">
+      <div className="bg-[#2b1d14] border border-white/10 rounded-xl overflow-hidden">
         <div className="px-5 py-4 border-b border-white/10">
           <p className="text-xs text-white/40 uppercase tracking-widest">Historique des contrats</p>
         </div>
@@ -65,8 +76,8 @@ export default async function ContratsPage({ params }: { params: Promise<{ id: s
                       </span>
                     </div>
                     <div className="flex items-center gap-4 text-sm">
-                      {c.salaire && <span className="text-white">${c.salaire.toLocaleString()}/mois</span>}
-                      {c.pourcentagePrime && <span className="text-[#a89af9]">{c.pourcentagePrime}% prime</span>}
+                      {c.salaire && <span className="text-white">{fmtArgent(c.salaire)}/sem.</span>}
+                      {c.pourcentagePrime && <span className="text-[#e4b56a]">{c.pourcentagePrime}% prime</span>}
                     </div>
                     {c.commentaire && (
                       <p className="text-white/30 text-xs">{c.commentaire}</p>
@@ -75,9 +86,15 @@ export default async function ContratsPage({ params }: { params: Promise<{ id: s
                   <div className="flex items-center gap-2 shrink-0">
                     <Link
                       href={`/dashboard/employes/${id}/contrats/${c.id}`}
-                      className="text-xs text-[#a89af9] hover:underline px-2 py-1 rounded transition-colors"
+                      className="text-xs text-white/50 hover:text-white px-2 py-1 rounded transition-colors"
                     >
-                      Voir PDF
+                      Voir
+                    </Link>
+                    <Link
+                      href={`/dashboard/employes/${id}/contrats/${c.id}?download=1`}
+                      className="text-xs text-[#e4b56a] hover:underline px-2 py-1 rounded transition-colors"
+                    >
+                      Télécharger
                     </Link>
                     <ContratActions id={c.id} estActif={c.estActif} />
                   </div>

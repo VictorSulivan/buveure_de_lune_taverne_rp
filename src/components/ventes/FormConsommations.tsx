@@ -1,20 +1,21 @@
 "use client";
 
 import { Produit } from "@prisma/client";
+import { fmtArgent } from "@/utils/fmtArgent";
 
 type ConsoItem = { produitId: number; nom: string; quantite: number; prixUnitaire: number };
 
 // --- 5. COMPOSANT : CONSOMMATIONS ---
 export default function FormConsommations({ produits, conso, onToggleProduit, onUpdateConsoQte }: { produits: Produit[]; conso: ConsoItem[]; onToggleProduit: (p: Produit) => void; onUpdateConsoQte: (id: number, q: number) => void }) {
   return (
-    <div className="bg-[#16162a] border border-white/10 rounded-xl p-5 space-y-4">
+    <div className="bg-[#2b1d14] border border-white/10 rounded-xl p-5 space-y-4">
       <p className="text-xs text-white/40 uppercase tracking-widest">Consommations prévues</p>
       <div className="grid grid-cols-2 gap-2">
         {produits.map((p) => (
           <button key={p.id} type="button" onClick={() => onToggleProduit(p)}
-            className={`text-left px-3 py-2 rounded-lg text-sm border transition-colors ${conso.find((c) => c.produitId === p.id) ? "bg-[#2a2250] border-[#3d3580] text-[#c4bbff]" : "bg-[#0f0f1a] border-white/10 text-white/50 hover:text-white"}`}>
+            className={`text-left px-3 py-2 rounded-lg text-sm border transition-colors ${conso.find((c) => c.produitId === p.id) ? "bg-[#6b3e22] border-[#a06b3c] text-[#f3d7a5]" : "bg-[#1c140e] border-white/10 text-white/50 hover:text-white"}`}>
             <span className="block">{p.nom}</span>
-            <span className="text-xs opacity-60">${p.prixVente}</span>
+            <span className="text-xs opacity-60">{fmtArgent(Number(p.prixVente))}</span>
           </button>
         ))}
       </div>

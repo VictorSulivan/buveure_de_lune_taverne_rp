@@ -1,40 +1,39 @@
 import { prisma } from "../lib/db/prisma";
+import { NOM_ENTREPRISE } from "../lib/branding";
 
 async function main() {
-  // Entreprise
   const entreprise = await prisma.entreprise.upsert({
     where: { id: 1 },
-    update: {},
-    create: { nom: "Les 3 Balais" },
+    update: { nom: NOM_ENTREPRISE },
+    create: { nom: NOM_ENTREPRISE },
   });
 
-  // Gringotts
-  await prisma.gringotts.upsert({
+  await prisma.banque.upsert({
     where: { entrepriseId: entreprise.id },
     update: {},
     create: { entrepriseId: entreprise.id, solde: 50000 },
   });
 
-  // Produits
   await prisma.produit.createMany({
     skipDuplicates: true,
     data: [
-      { nom: "Burger Los Santos", categorie: "plat", stock: 50, prixAchat: 5, prixVente: 15 },
-      { nom: "Hot Dog Vinewood", categorie: "plat", stock: 30, prixAchat: 3, prixVente: 10 },
-      { nom: "Pizza Grove Street", categorie: "plat", stock: 3, prixAchat: 8, prixVente: 20 },
-      { nom: "Cola", categorie: "boisson", stock: 100, prixAchat: 1, prixVente: 5 },
-      { nom: "Bière Maze Bank", categorie: "boisson", stock: 4, prixAchat: 2, prixVente: 8 },
-      { nom: "Eau", categorie: "boisson", stock: 200, prixAchat: 0.5, prixVente: 3 },
+      { nom: "Hydromel de lune", categorie: "boisson", stock: 40, prixAchat: 4, prixVente: 12 },
+      { nom: "Bière brune maison", categorie: "boisson", stock: 60, prixAchat: 2, prixVente: 7 },
+      { nom: "Vin d'hiver", categorie: "boisson", stock: 25, prixAchat: 6, prixVente: 16 },
+      { nom: "Cidre aux pommes sauvages", categorie: "boisson", stock: 35, prixAchat: 3, prixVente: 9 },
+      { nom: "Ragoût du voyageur", categorie: "plat", stock: 20, prixAchat: 5, prixVente: 14 },
+      { nom: "Pain de campagne", categorie: "plat", stock: 50, prixAchat: 1, prixVente: 4 },
+      { nom: "Fromage fumé", categorie: "plat", stock: 18, prixAchat: 3, prixVente: 8 },
+      { nom: "Soupe aux racines", categorie: "plat", stock: 22, prixAchat: 2, prixVente: 6 },
     ],
   });
 
-  // Clients
   await prisma.client.createMany({
     skipDuplicates: true,
     data: [
-      { nom: "Martin", prenom: "Trevor", typeClient: "particulier", entrepriseId: entreprise.id },
-      { nom: "Johnson", prenom: "Michael", typeClient: "particulier", entrepriseId: entreprise.id },
-      { nom: "Franklin", prenom: "Clinton", typeClient: "particulier", entrepriseId: entreprise.id },
+      { nom: "Valen", prenom: "Iria", typeClient: "particulier", entrepriseId: entreprise.id },
+      { nom: "Dorn", prenom: "Kael", typeClient: "particulier", entrepriseId: entreprise.id },
+      { nom: "Serren", prenom: "Maelis", typeClient: "particulier", entrepriseId: entreprise.id },
     ],
   });
 

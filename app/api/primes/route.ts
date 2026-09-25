@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 import { auth } from "@/lib/auth/auth";
+import { TAXE_BANQUE } from "@/lib/branding";
 
 export async function GET() {
   const session = await auth();
@@ -16,8 +17,6 @@ export async function GET() {
   return NextResponse.json(primes);
 }
 
-const TAXE = 20;
-
 export async function POST(req: Request) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
@@ -31,7 +30,7 @@ export async function POST(req: Request) {
   }
 
   const montantBrut = parseFloat(montant);
-  const taxe = Math.round(montantBrut * TAXE / 100);
+  const taxe = Math.round(montantBrut * TAXE_BANQUE / 100);
   const netPrime = montantBrut - taxe;
 
   const attribueur = await prisma.employe.findFirst({
@@ -51,13 +50,11 @@ export async function POST(req: Request) {
       },
     });
 
-    // Débiter Gringotts du brut entier
-    await tx.gringotts.updateMany({
+    await tx.banque.updateMany({
       data: { solde: { decrement: montantBrut } },
     });
 
-    // Transaction : prime nette versée à l'employé
-    await tx.transactionGringotts.create({
+    await tx.transactionBanque.create({
       data: {
         typeTransaction: "prime",
         montant: netPrime,
@@ -66,12 +63,11 @@ export async function POST(req: Request) {
       },
     });
 
-    // Transaction : taxe Gringotts 20% sur la prime
-    await tx.transactionGringotts.create({
+    await tx.transactionBanque.create({
       data: {
         typeTransaction: "taxe",
         montant: taxe,
-        description: `Taxe Gringotts ${TAXE}% sur prime S${semestre}/${annee}`,
+        description: `Taxe bancaire ${TAXE_BANQUE}% sur prime S${semestre}/${annee}`,
         employeId: attribueur?.id ?? null,
       },
     });

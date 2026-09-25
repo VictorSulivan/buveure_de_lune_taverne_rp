@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 import { auth } from "@/lib/auth/auth";
+import { DEVISE } from "@/lib/branding";
 
 export async function GET() {
   const session = await auth();
@@ -12,6 +13,7 @@ export async function GET() {
     include: {
       client: true,
       employe: true,
+      organisation: true,
       produits: { include: { produit: true } },
     },
   });
@@ -24,8 +26,8 @@ export async function POST(req: Request) {
 
   const user = session.user;
   const body = await req.json();
-  const { clientId, lignes, extras } = body; 
-  // lignes attendues : Array<{ produitId: number, quantite: number, prixEtudiant: boolean, prixEmploye: boolean }>
+  const { clientId, lignes, extras, contexteCommande } = body; 
+  // lignes attendues : Array<{ produitId: number, quantite: number, prixEmploye: boolean }>
 
   if (!clientId || (!lignes?.length && !extras?.length)) {
     return NextResponse.json({ error: "Données manquantes" }, { status: 400 });
@@ -63,9 +65,7 @@ export async function POST(req: Request) {
         let prixUnitaireFinal = prixVenteDeBase;
         
         if (l.prixEmploye) {
-          prixUnitaireFinal = prixAchatDeBase; // Prix d'achat direct
-        } else if (l.prixEtudiant) {
-          prixUnitaireFinal = Math.round((prixVenteDeBase * 0.84) * 100) / 100; // Tarif étudiant (-16%)
+          prixUnitaireFinal = prixAchatDeBase;
         }
 
         const totalLigne = l.quantite * prixUnitaireFinal;
@@ -86,11 +86,33 @@ export async function POST(req: Request) {
       
       const montantTotal = totalProduitsCalculs + totalExtras;
 
-      // Création de l'enregistrement de vente
+      const contexte = contexteCommande === "entreprise" || contexteCommande === "nation"
+        ? contexteCommande
+        : "civil";
+
+      let organisationId: number | null = null;
+      if (contexte !== "civil") {
+        const affiliation = await tx.affiliation.findFirst({
+          where: {
+            clientId: parseInt(clientId),
+            dateFin: null,
+            organisation: { type: contexte },
+          },
+        });
+        if (!affiliation) {
+          throw new Error(contexte === "nation"
+            ? "Ce client n'a pas de nation actuelle."
+            : "Ce client n'a pas d'entreprise actuelle.");
+        }
+        organisationId = affiliation.organisationId;
+      }
+
       const v = await tx.vente.create({
         data: {
           employeId: employe.id,
           clientId: parseInt(clientId),
+          contexteCommande: contexte,
+          organisationId,
           montantTotal,
           statut: "validee",
           produits: {
@@ -107,17 +129,15 @@ export async function POST(req: Request) {
         });
       }
 
-      // Créditer Gringotts
-      await tx.gringotts.updateMany({
+      await tx.banque.updateMany({
         data: { solde: { increment: montantTotal } },
       });
 
-      // Création du reçu comptable de l'opération
       const extrasDesc = (extras ?? []).length > 0
-        ? ` + extras: ${(extras as Extra[]).map((e) => `${e.label} (${e.montant}) Mornilles`).join(", ")}`
+        ? ` + extras: ${(extras as Extra[]).map((e) => `${e.label} (${e.montant}) ${DEVISE}`).join(", ")}`
         : "";
 
-      await tx.transactionGringotts.create({
+      await tx.transactionBanque.create({
         data: {
           typeTransaction: "vente",
           montant: montantTotal,

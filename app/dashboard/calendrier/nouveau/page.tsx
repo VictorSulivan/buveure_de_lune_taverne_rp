@@ -4,7 +4,10 @@ import NouvelEvenementForm from "@/components/calendrier/NouvelEvenementForm";
 export default async function NouvelEvenementPage() {
   const [employes, clients, produits] = await Promise.all([
     prisma.employe.findMany({ where: { actif: true }, orderBy: { nom: "asc" } }),
-    prisma.client.findMany({ orderBy: { nom: "asc" } }),
+    prisma.client.findMany({
+      orderBy: { nom: "asc" },
+      include: { affiliations: { include: { organisation: true }, orderBy: { dateDebut: "desc" } } },
+    }),
     prisma.produit.findMany({ where: { actif: true }, orderBy: { nom: "asc" } }),
   ]);
 

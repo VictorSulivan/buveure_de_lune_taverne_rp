@@ -21,7 +21,7 @@ const JOURS = ["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
 
 const typeColor: Record<string, string> = {
   reservation: "bg-blue-500/20 text-blue-300 border-blue-500/30",
-  soiree:      "bg-purple-500/20 text-purple-300 border-purple-500/30",
+  soiree:      "bg-amber-700/25 text-amber-200 border-amber-600/35",
 };
 
 const statutColor: Record<string, string> = {
@@ -77,7 +77,7 @@ export default function CalendrierView({ evenements }: { evenements: Evenement[]
         </div>
 
         {/* Grille */}
-        <div className="bg-[#16162a] border border-white/10 rounded-xl overflow-hidden">
+        <div className="bg-[#2b1d14] border border-white/10 rounded-xl overflow-hidden">
           {/* Jours */}
           <div className="grid grid-cols-7 border-b border-white/10">
             {JOURS.map((j) => (
@@ -94,7 +94,7 @@ export default function CalendrierView({ evenements }: { evenements: Evenement[]
                 <div key={i} className={`min-h-[90px] p-1.5 border-b border-r border-white/5 ${!jour ? "bg-white/2" : "hover:bg-white/3"} transition-colors`}>
                   {jour && (
                     <>
-                      <div className={`text-xs font-medium w-6 h-6 flex items-center justify-center rounded-full mb-1 ${isToday ? "bg-[#a89af9] text-[#0f0f1a]" : "text-white/40"}`}>
+                      <div className={`text-xs font-medium w-6 h-6 flex items-center justify-center rounded-full mb-1 ${isToday ? "bg-[#e4b56a] text-[#1c140e]" : "text-white/40"}`}>
                         {jour}
                       </div>
                       <div className="space-y-0.5">
@@ -120,7 +120,7 @@ export default function CalendrierView({ evenements }: { evenements: Evenement[]
       {/* Panel détail */}
       <div className="w-72 shrink-0">
         {selected ? (
-          <div className="bg-[#16162a] border border-white/10 rounded-xl p-5 space-y-4 sticky top-4">
+          <div className="bg-[#2b1d14] border border-white/10 rounded-xl p-5 space-y-4 sticky top-4">
             <div className="flex items-start justify-between">
               <div>
                 <span className={`text-xs px-2 py-1 rounded-full border ${typeColor[selected.type]}`}>
@@ -176,12 +176,12 @@ export default function CalendrierView({ evenements }: { evenements: Evenement[]
             )}
 
             <Link href={`/dashboard/calendrier/${selected.id}`}
-              className="block w-full text-center text-sm bg-[#2a2250] hover:bg-[#342b6e] border border-[#3d3580] text-[#c4bbff] py-2 rounded-lg transition-colors">
+              className="block w-full text-center text-sm bg-[#6b3e22] hover:bg-[#8a532c] border border-[#a06b3c] text-[#f3d7a5] py-2 rounded-lg transition-colors">
               Voir le détail →
             </Link>
           </div>
         ) : (
-          <div className="bg-[#16162a] border border-white/10 rounded-xl p-5">
+          <div className="bg-[#2b1d14] border border-white/10 rounded-xl p-5">
             <p className="text-white/30 text-sm text-center">Clique sur un événement pour voir les détails</p>
             <div className="mt-4 space-y-2">
               <p className="text-xs text-white/20 uppercase tracking-widest">Prochains événements</p>

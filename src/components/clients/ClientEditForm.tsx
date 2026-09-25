@@ -2,25 +2,24 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { ChampsAffiliations } from "@/components/clients/ChampsAffiliations";
 
-type ClientForm = {
-  id: number;
-  nom: string;
-  prenom: string | null;
-  typeClient: string | null;
-};
-
-export default function ClientEditForm({ client }: { client: ClientForm }) {
+export default function ClientEditForm({
+  client,
+}: {
+  client: { id: number; nom: string; prenom: string | null; entrepriseNom: string; nationNom: string };
+}) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
   const [form, setForm] = useState({
     nom: client.nom,
     prenom: client.prenom ?? "",
-    typeClient: client.typeClient ?? "particulier",
+    entrepriseNom: client.entrepriseNom,
+    nationNom: client.nationNom,
   });
 
-  function set(key: string, val: string) {
+  function set(key: keyof typeof form, val: string) {
     setForm((f) => ({ ...f, [key]: val }));
   }
 
@@ -38,27 +37,8 @@ export default function ClientEditForm({ client }: { client: ClientForm }) {
   }
 
   return (
-    <div className="bg-[#16162a] border border-white/10 rounded-xl p-5 space-y-4">
+    <div className="bg-[#2b1d14] border border-white/10 rounded-xl p-5 space-y-4">
       <p className="text-xs text-white/40 uppercase tracking-widest">Modifier</p>
-
-      <div>
-        <label className="block text-xs text-white/40 mb-1.5">Type</label>
-        <div className="grid grid-cols-2 gap-2">
-          {[
-            { value: "particulier", label: "👤  Particulier" },
-            { value: "entreprise",  label: "🏢  Entreprise" },
-          ].map(({ value, label }) => (
-            <button key={value} type="button" onClick={() => set("typeClient", value)}
-              className={`py-2 rounded-lg text-sm border transition-colors ${
-                form.typeClient === value
-                  ? "bg-[#2a2250] border-[#3d3580] text-[#c4bbff]"
-                  : "bg-[#0f0f1a] border-white/10 text-white/40 hover:text-white hover:border-white/20"
-              }`}>
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
@@ -71,11 +51,17 @@ export default function ClientEditForm({ client }: { client: ClientForm }) {
         </div>
       </div>
 
+      <ChampsAffiliations
+        entrepriseNom={form.entrepriseNom}
+        nationNom={form.nationNom}
+        onChange={set}
+      />
+
       <button onClick={handleSave} disabled={loading}
         className={`w-full text-sm font-medium py-2.5 rounded-lg border transition-colors ${
           saved
             ? "bg-green-500/10 border-green-500/20 text-green-400"
-            : "bg-[#2a2250] hover:bg-[#342b6e] border-[#3d3580] text-[#c4bbff] disabled:opacity-50"
+            : "bg-[#6b3e22] hover:bg-[#8a532c] border-[#a06b3c] text-[#f3d7a5] disabled:opacity-50"
         }`}>
         {saved ? "✓ Sauvegardé" : loading ? "Sauvegarde..." : "Sauvegarder"}
       </button>

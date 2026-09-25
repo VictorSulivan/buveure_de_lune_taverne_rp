@@ -2,8 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { DEVISE } from "@/lib/branding";
 
-const ROLES_EMPLOYE = ["stagiaire", "employe", "co_patron", "patron"];
+import { GRADES, labelGrade } from "@/lib/grades";
+
+const ROLES_EMPLOYE = [...GRADES];
 const ROLES_SITE = ["employe", "co_patron", "patron", "admin"];
 
 export default function NouvelEmploye() {
@@ -51,7 +54,7 @@ export default function NouvelEmploye() {
 
       <div className="space-y-5">
         {/* Infos personnelles */}
-        <div className="bg-[#16162a] border border-white/10 rounded-xl p-5 space-y-4">
+        <div className="bg-[#2b1d14] border border-white/10 rounded-xl p-5 space-y-4">
           <p className="text-xs text-white/40 uppercase tracking-widest">Informations</p>
 
           <div className="grid grid-cols-2 gap-4">
@@ -72,10 +75,10 @@ export default function NouvelEmploye() {
                 <button key={r} type="button" onClick={() => set("role", r)}
                   className={`py-2.5 rounded-lg text-sm border transition-colors ${
                     form.role === r
-                      ? "bg-[#2a2250] border-[#3d3580] text-[#c4bbff]"
-                      : "bg-[#0f0f1a] border-white/10 text-white/40 hover:text-white hover:border-white/20"
+                      ? "bg-[#6b3e22] border-[#a06b3c] text-[#f3d7a5]"
+                      : "bg-[#1c140e] border-white/10 text-white/40 hover:text-white hover:border-white/20"
                   }`}>
-                  {r.replace("_", " ")}
+                  {labelGrade(r)}
                 </button>
               ))}
             </div>
@@ -83,7 +86,7 @@ export default function NouvelEmploye() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs text-white/40 mb-1.5">Salaire (mornilles)</label>
+              <label className="block text-xs text-white/40 mb-1.5">Salaire hebdomadaire ({DEVISE})</label>
               <input type="number" value={form.salaire} onChange={(e) => set("salaire", e.target.value)} className="input-dark" placeholder="5000" />
             </div>
             <div>
@@ -94,14 +97,14 @@ export default function NouvelEmploye() {
         </div>
 
         {/* Compte site */}
-        <div className="bg-[#16162a] border border-white/10 rounded-xl p-5 space-y-4">
+        <div className="bg-[#2b1d14] border border-white/10 rounded-xl p-5 space-y-4">
           <div className="flex items-center justify-between">
             <p className="text-xs text-white/40 uppercase tracking-widest">Compte site</p>
             <button
               onClick={() => setAvecCompte(!avecCompte)}
               className={`text-xs px-3 py-1 rounded-full border transition-colors ${
                 avecCompte
-                  ? "bg-[#2a2250] border-[#3d3580] text-[#c4bbff]"
+                  ? "bg-[#6b3e22] border-[#a06b3c] text-[#f3d7a5]"
                   : "bg-white/5 border-white/10 text-white/40"
               }`}
             >
@@ -126,10 +129,10 @@ export default function NouvelEmploye() {
                     <button key={r} type="button" onClick={() => set("roleSite", r)}
                       className={`py-2 rounded-lg text-sm border transition-colors ${
                         form.roleSite === r
-                          ? "bg-[#2a2250] border-[#3d3580] text-[#c4bbff]"
-                          : "bg-[#0f0f1a] border-white/10 text-white/40 hover:text-white hover:border-white/20"
+                          ? "bg-[#6b3e22] border-[#a06b3c] text-[#f3d7a5]"
+                          : "bg-[#1c140e] border-white/10 text-white/40 hover:text-white hover:border-white/20"
                       }`}>
-                      {r.replace("_", " ")}
+                      {labelGrade(r)}
                     </button>
                   ))}
                 </div>
@@ -142,7 +145,7 @@ export default function NouvelEmploye() {
 
         <div className="flex gap-3">
           <button onClick={handleSubmit} disabled={loading}
-            className="flex-1 bg-[#2a2250] hover:bg-[#342b6e] border border-[#3d3580] text-[#c4bbff] text-sm font-medium py-2.5 rounded-lg transition-colors disabled:opacity-50">
+            className="flex-1 bg-[#6b3e22] hover:bg-[#8a532c] border border-[#a06b3c] text-[#f3d7a5] text-sm font-medium py-2.5 rounded-lg transition-colors disabled:opacity-50">
             {loading ? "Création..." : "Créer l'employé"}
           </button>
           <button onClick={() => router.back()}

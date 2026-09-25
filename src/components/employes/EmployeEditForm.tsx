@@ -2,8 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { DEVISE } from "@/lib/branding";
 
-const ROLES_EMPLOYE = ["stagiaire", "employe", "co_patron", "patron"];
+import { GRADES, labelGrade } from "@/lib/grades";
+
+const ROLES_EMPLOYE = [...GRADES];
 
 type EmployeForm = {
   id: number;
@@ -47,7 +50,7 @@ export default function EmployeEditForm({ employe }: { employe: EmployeForm }) {
   }
 
   return (
-    <div className="bg-[#16162a] border border-white/10 rounded-xl p-5 space-y-4">
+    <div className="bg-[#2b1d14] border border-white/10 rounded-xl p-5 space-y-4">
       <p className="text-xs text-white/40 uppercase tracking-widest">Modifier</p>
 
       <div className="grid grid-cols-2 gap-4">
@@ -68,17 +71,17 @@ export default function EmployeEditForm({ employe }: { employe: EmployeForm }) {
             <button key={r} type="button" onClick={() => set("role", r)}
               className={`py-2 rounded-lg text-sm border transition-colors ${
                 form.role === r
-                  ? "bg-[#2a2250] border-[#3d3580] text-[#c4bbff]"
-                  : "bg-[#0f0f1a] border-white/10 text-white/40 hover:text-white hover:border-white/20"
+                  ? "bg-[#6b3e22] border-[#a06b3c] text-[#f3d7a5]"
+                  : "bg-[#1c140e] border-white/10 text-white/40 hover:text-white hover:border-white/20"
               }`}>
-              {r.replace("_", " ")}
+              {labelGrade(r)}
             </button>
           ))}
         </div>
       </div>
 
       <div>
-        <label className="block text-xs text-white/40 mb-1.5">Salaire (Mornilles)</label>
+        <label className="block text-xs text-white/40 mb-1.5">Salaire hebdomadaire ({DEVISE})</label>
         <input type="number" value={form.salaire}
           onChange={(e) => set("salaire", e.target.value)}
           className="input-dark" placeholder="5000" />
@@ -95,7 +98,7 @@ export default function EmployeEditForm({ employe }: { employe: EmployeForm }) {
         className={`w-full text-sm font-medium py-2.5 rounded-lg border transition-colors ${
           saved
             ? "bg-green-500/10 border-green-500/20 text-green-400"
-            : "bg-[#2a2250] hover:bg-[#342b6e] border-[#3d3580] text-[#c4bbff] disabled:opacity-50"
+            : "bg-[#6b3e22] hover:bg-[#8a532c] border-[#a06b3c] text-[#f3d7a5] disabled:opacity-50"
         }`}>
         {saved ? "✓ Sauvegardé" : loading ? "Sauvegarde..." : "Sauvegarder"}
       </button>

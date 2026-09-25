@@ -24,7 +24,7 @@ export default async function RestockPage() {
       <div className="mb-8">
         <h1 className="text-2xl font-medium text-white">Nouveau Restock</h1>
         <p className="text-white/40 text-sm mt-1">
-          Ajoutez des articles au stock. Le montant total sera débité du compte Gringotts.
+          Ajoutez des articles au stock. Réapprovisionnement physique, sans impact sur le solde bancaire.
         </p>
       </div>
 

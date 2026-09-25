@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { DEVISE } from "@/lib/branding";
 
 export default function NouveauProduit() {
   const router = useRouter();
@@ -41,7 +42,7 @@ export default function NouveauProduit() {
         <p className="text-white/40 text-sm mt-1">Ajouter un produit au catalogue</p>
       </div>
 
-      <div className="bg-[#16162a] border border-white/10 rounded-xl p-6 space-y-5">
+      <div className="bg-[#2b1d14] border border-white/10 rounded-xl p-6 space-y-5">
         <Field label="Nom du produit">
           <input
             placeholder="ex: Burger Los Santos"
@@ -63,8 +64,8 @@ export default function NouveauProduit() {
                 onClick={() => set("categorie", value)}
                 className={`py-2.5 rounded-lg text-sm font-medium border transition-colors ${
                   form.categorie === value
-                    ? "bg-[#2a2250] border-[#3d3580] text-[#c4bbff]"
-                    : "bg-[#0f0f1a] border-white/10 text-white/40 hover:text-white hover:border-white/20"
+                    ? "bg-[#6b3e22] border-[#a06b3c] text-[#f3d7a5]"
+                    : "bg-[#1c140e] border-white/10 text-white/40 hover:text-white hover:border-white/20"
                 }`}
               >
                 {label}
@@ -83,7 +84,7 @@ export default function NouveauProduit() {
         </Field>
 
         <div className="grid grid-cols-2 gap-4">
-          <Field label="Prix d'achat (mornilles)">
+          <Field label={`Prix d'achat (${DEVISE})`}>
             <input
               type="number" min={0} step={0.01}
               value={form.prixAchat}
@@ -91,7 +92,7 @@ export default function NouveauProduit() {
               className="input-dark"
             />
           </Field>
-          <Field label="Prix de vente (mornilles)">
+          <Field label={`Prix de vente (${DEVISE})`}>
             <input
               type="number" min={0} step={0.01}
               value={form.prixVente}
@@ -116,7 +117,7 @@ export default function NouveauProduit() {
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="flex-1 bg-[#2a2250] hover:bg-[#342b6e] border border-[#3d3580] text-[#c4bbff] text-sm font-medium py-2.5 rounded-lg transition-colors disabled:opacity-50"
+            className="flex-1 bg-[#6b3e22] hover:bg-[#8a532c] border border-[#a06b3c] text-[#f3d7a5] text-sm font-medium py-2.5 rounded-lg transition-colors disabled:opacity-50"
           >
             {loading ? "Création..." : "Créer le produit"}
           </button>

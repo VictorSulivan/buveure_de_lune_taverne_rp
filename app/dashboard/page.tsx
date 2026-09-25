@@ -1,17 +1,19 @@
 import { auth } from "@/lib/auth/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db/prisma";
+import { NOM_BANQUE } from "@/lib/branding";
+import { fmtArgent } from "@/utils/fmtArgent";
 
 export default async function Dashboard() {
   const session = await auth();
   if (!session) redirect("/login");
 
-  const [totalProduits, stockCritique, totalEmployes, soldeGringotts, ventesAujourdhui] =
+  const [totalProduits, stockCritique, totalEmployes, soldeBanque, ventesAujourdhui] =
     await Promise.all([
       prisma.produit.count({ where: { actif: true } }),
       prisma.produit.count({ where: { actif: true, stock: { lte: 5 } } }),
       prisma.employe.count({ where: { actif: true } }),
-      prisma.gringotts.findFirst().then((g) => g?.solde ?? 0),
+      prisma.banque.findFirst().then((g) => g?.solde ?? 0),
       prisma.vente.count({
         where: {
           dateVente: { gte: new Date(new Date().setHours(0, 0, 0, 0)) },
@@ -21,7 +23,7 @@ export default async function Dashboard() {
     ]);
 
   const stats = [
-    { label: "Solde Gringotts",    value: `${soldeGringotts.toLocaleString()} Mornilles`, icon: "🏦", alert: false },
+    { label: `Solde ${NOM_BANQUE.toLowerCase()}`, value: fmtArgent(soldeBanque), icon: "🏦", alert: false },
     { label: "Ventes aujourd'hui", value: ventesAujourdhui.toString(),           icon: "💰", alert: false },
     { label: "Employés actifs",    value: totalEmployes.toString(),               icon: "👷", alert: false },
     { label: "Stock critique",     value: stockCritique.toString(),               icon: "📦", alert: stockCritique > 0 },
@@ -33,8 +35,8 @@ export default async function Dashboard() {
     <div>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-medium text-white">Bonjour, {user.username} 👋</h1>
-        <p className="text-white/40 text-sm mt-1">Voici l&apos;état de l&apos;entreprise en temps réel.</p>
+        <h1 className="text-2xl font-medium text-[#f3d7a5]">Bienvenue, {user.username}</h1>
+        <p className="text-[#f4e6cf]/45 text-sm mt-1">Voici l&apos;état de l&apos;auberge en temps réel.</p>
       </div>
 
       {/* Stats */}
@@ -42,7 +44,7 @@ export default async function Dashboard() {
         {stats.map(({ label, value, icon, alert }) => (
           <div
             key={label}
-            className={`bg-[#16162a] border rounded-xl p-5 ${
+            className={`bg-[#2b1d14] border rounded-xl p-5 ${
               alert ? "border-orange-500/40" : "border-white/10"
             }`}
           >
@@ -61,7 +63,7 @@ export default async function Dashboard() {
       </div>
 
       {/* Infos rapides */}
-      <div className="bg-[#16162a] border border-white/10 rounded-xl p-5">
+      <div className="bg-[#2b1d14] border border-white/10 rounded-xl p-5">
         <p className="text-white/40 text-xs uppercase tracking-widest mb-4">Infos rapides</p>
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
@@ -70,7 +72,7 @@ export default async function Dashboard() {
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-white/50">Ton rôle</span>
-            <span className="text-[#a89af9] capitalize">{user.role}</span>
+            <span className="text-[#e4b56a] capitalize">{user.role}</span>
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import EvenementActions from "@/components/calendrier/EvenementActions";
 import { fmtDate } from "@/utils/formatDate";
+import { fmtArgent } from "@/utils/fmtArgent";
 
 export default async function EvenementPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -24,7 +25,7 @@ export default async function EvenementPage({ params }: { params: Promise<{ id: 
 
   const typeColor: Record<string, string> = {
     reservation: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-    soiree:      "bg-purple-500/10 text-purple-400 border-purple-500/20",
+    soiree:      "bg-amber-700/20 text-amber-300 border-amber-600/30",
   };
 
   const statutColor: Record<string, string> = {
@@ -45,7 +46,7 @@ export default async function EvenementPage({ params }: { params: Promise<{ id: 
       </div>
 
       {/* Header */}
-      <div className="bg-[#16162a] border border-white/10 rounded-xl p-5">
+      <div className="bg-[#2b1d14] border border-white/10 rounded-xl p-5">
         <div className="flex items-start justify-between gap-4 mb-4">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
@@ -68,9 +69,9 @@ export default async function EvenementPage({ params }: { params: Promise<{ id: 
         {[
           { label: "Clients", value: e.clients.length.toString() },
           { label: "Personnes", value: totalPersonnes.toString() },
-          { label: "Conso estimée", value: `${totalConso.toFixed(0)} Mornilles` },
+          { label: "Conso estimée", value: fmtArgent(totalConso) },
         ].map(({ label, value }) => (
-          <div key={label} className="bg-[#16162a] border border-white/10 rounded-xl p-4 text-center">
+          <div key={label} className="bg-[#2b1d14] border border-white/10 rounded-xl p-4 text-center">
             <p className="text-xl font-medium text-white">{value}</p>
             <p className="text-white/40 text-xs mt-1">{label}</p>
           </div>
@@ -79,11 +80,11 @@ export default async function EvenementPage({ params }: { params: Promise<{ id: 
 
       {/* Responsable + équipe */}
       {(e.responsable || e.employes.length > 0) && (
-        <div className="bg-[#16162a] border border-white/10 rounded-xl p-5 space-y-3">
+        <div className="bg-[#2b1d14] border border-white/10 rounded-xl p-5 space-y-3">
           <p className="text-xs text-white/40 uppercase tracking-widest">Équipe</p>
           {e.responsable && (
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-[#2a2250] border border-[#3d3580] flex items-center justify-center text-[#a89af9] text-xs uppercase">
+              <div className="w-8 h-8 rounded-full bg-[#6b3e22] border border-[#a06b3c] flex items-center justify-center text-[#e4b56a] text-xs uppercase">
                 {e.responsable.prenom[0]}{e.responsable.nom[0]}
               </div>
               <div>
@@ -105,7 +106,7 @@ export default async function EvenementPage({ params }: { params: Promise<{ id: 
 
       {/* Clients */}
       {e.clients.length > 0 && (
-        <div className="bg-[#16162a] border border-white/10 rounded-xl p-5 space-y-3">
+        <div className="bg-[#2b1d14] border border-white/10 rounded-xl p-5 space-y-3">
           <p className="text-xs text-white/40 uppercase tracking-widest">Clients ({e.clients.length})</p>
           {e.clients.map((c) => (
             <div key={c.id} className="flex items-center justify-between">
@@ -121,24 +122,24 @@ export default async function EvenementPage({ params }: { params: Promise<{ id: 
 
       {/* Consommations */}
       {e.consommations.length > 0 && (
-        <div className="bg-[#16162a] border border-white/10 rounded-xl p-5 space-y-3">
+        <div className="bg-[#2b1d14] border border-white/10 rounded-xl p-5 space-y-3">
           <p className="text-xs text-white/40 uppercase tracking-widest">Consommations</p>
           {e.consommations.map((c) => (
             <div key={c.id} className="flex items-center justify-between text-sm">
               <span className="text-white/60">{c.produit.nom} ×{c.quantite}</span>
-              <span className="text-white">${(c.quantite * c.prixUnitaire).toFixed(0)}</span>
+              <span className="text-white">{fmtArgent(c.quantite * c.prixUnitaire)}</span>
             </div>
           ))}
           <div className="border-t border-white/10 pt-2 flex justify-between text-sm font-medium">
             <span className="text-white/40">Total</span>
-            <span className="text-white">${totalConso.toFixed(0)}</span>
+            <span className="text-white">{fmtArgent(totalConso)}</span>
           </div>
         </div>
       )}
 
       {/* Commentaire */}
       {e.commentaire && (
-        <div className="bg-[#16162a] border border-white/10 rounded-xl p-5">
+        <div className="bg-[#2b1d14] border border-white/10 rounded-xl p-5">
           <p className="text-xs text-white/40 uppercase tracking-widest mb-2">Commentaire</p>
           <p className="text-white/60 text-sm">{e.commentaire}</p>
         </div>

@@ -5,22 +5,21 @@ import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
 import beerLogo from "./../../../public/beer.png";
+import { NOM_ENTREPRISE } from "@/lib/branding";
 const NAV = [
   { href: "/dashboard",                 label: "Dashboard",  icon: "⬡" },
   { href: "/dashboard/ventes",          label: "Ventes",     icon: "💰" },
   { href: "/dashboard/stock",           label: "Stock",      icon: "📦" },
   { href: "/dashboard/clients",         label: "Clients",    icon: "👥" },
-  { href: "/dashboard/gringotts",       label: "Gringotts",  icon: "🏦" },
+  { href: "/dashboard/organisations",   label: "Cie & nations", icon: "🏛️" },
+  { href: "/dashboard/banque",          label: "Banque",     icon: "🏦" },
   { href: "/dashboard/calendrier",      label: "Calendrier", icon: "📅" },
 ];
 
 const RH_NAV = [
   { href: "/dashboard/employes",                label: "Employés",  icon: "👷" },
+  { href: "/dashboard/employes/salaires",       label: "Salaires",  icon: "🪙" },
   { href: "/dashboard/employes/primes",         label: "Primes",    icon: "🏆" },
-];
-
-const ADMIN_NAV = [
-  { href: "/admin", label: "Admin", icon: "⚙️" },
 ];
 
 type Props = {
@@ -29,13 +28,13 @@ type Props = {
 
 function NavLink({ href, label, icon }: { href: string; label: string; icon: string }) {
   const pathname = usePathname();
-  const active = pathname === href;
+  const active = pathname === href || (href !== "/dashboard" && pathname.startsWith(href + "/"));
   return (
     <Link
       href={href}
       className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
         active
-          ? "bg-[#2a2250] text-[#c4bbff] border border-[#3d3580]"
+          ? "bg-[#6b3e22] text-[#f3d7a5] border border-[#a06b3c]"
           : "text-white/50 hover:text-white hover:bg-white/5"
       }`}
     >
@@ -47,26 +46,24 @@ function NavLink({ href, label, icon }: { href: string; label: string; icon: str
 
 export default function Sidebar({ user }: Props) {
   const pathname = usePathname();
-  const isAdmin = user.role === "admin" || user.role === "patron";
-
   // Détecte si on est sur une fiche employé pour afficher les sous-liens
   const employeMatch = pathname.match(/^\/dashboard\/employes\/(\d+)/);
   const employeId = employeMatch?.[1];
 
   return (
-    <aside className="w-60 shrink-0 flex flex-col bg-[#16162a] border-r border-white/10 h-full">
+    <aside className="w-60 shrink-0 flex flex-col tavern-wood border-r border-[#e4b56a]/20 h-full shadow-[8px_0_24px_rgba(0,0,0,0.35)]">
       {/* Logo */}
-      <div className="flex items-center gap-3 px-5 py-5 border-b border-white/10">
-        <div className="w-8 h-8 bg-[#2a2250] border border-[#3d3580] rounded-lg flex items-center justify-center overflow-hidden">
+      <div className="flex items-center gap-3 px-5 py-5 border-b border-[#e4b56a]/15">
+        <div className="w-8 h-8 bg-[#6b3e22] border border-[#a06b3c] rounded-lg flex items-center justify-center overflow-hidden">
           <Image 
-            src={beerLogo} // On passe la variable importée, sans guillemets
-            alt="Logo Bière Comptabilité" 
-            className="w-6 h-6 object-contain" // Plus besoin de width/height fixes ici, Next les calcule automatiquement avec l'import direct
+            src={beerLogo}
+            alt="Logo Le Buveur de Lune"
+            className="w-6 h-6 object-contain"
           />
         </div>
         <div>
-          <p className="text-white font-medium text-sm leading-none">GTA RP</p>
-          <p className="text-white/40 text-xs mt-0.5">Manager</p>
+          <p className="font-display text-[#f3d7a5] font-medium text-sm leading-none">{NOM_ENTREPRISE}</p>
+          <p className="text-[#f4e6cf]/40 text-xs mt-0.5">L&apos;auberge</p>
         </div>
       </div>
 
@@ -91,7 +88,7 @@ export default function Sidebar({ user }: Props) {
                 <Link key={href} href={href}
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-colors ${
                     active
-                      ? "bg-[#2a2250] text-[#c4bbff] border border-[#3d3580]"
+                      ? "bg-[#6b3e22] text-[#f3d7a5] border border-[#a06b3c]"
                       : "text-white/40 hover:text-white hover:bg-white/5"
                   }`}>
                   <span>{icon}</span>
@@ -102,20 +99,12 @@ export default function Sidebar({ user }: Props) {
           </div>
         )}
 
-        {isAdmin && (
-          <>
-            <div className="pt-3 pb-1 px-3">
-              <p className="text-white/20 text-xs uppercase tracking-widest">Admin</p>
-            </div>
-            {ADMIN_NAV.map((item) => <NavLink key={item.href} {...item} />)}
-          </>
-        )}
       </nav>
 
       {/* User + logout */}
       <div className="px-4 py-4 border-t border-white/10">
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-8 h-8 rounded-full bg-[#2a2250] border border-[#3d3580] flex items-center justify-center text-[#a89af9] text-xs font-medium uppercase">
+          <div className="w-8 h-8 rounded-full bg-[#6b3e22] border border-[#a06b3c] flex items-center justify-center text-[#e4b56a] text-xs font-medium uppercase">
             {user.username?.slice(0, 2)}
           </div>
           <div className="min-w-0">

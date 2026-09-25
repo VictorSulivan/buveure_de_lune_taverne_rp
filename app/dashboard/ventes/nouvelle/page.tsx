@@ -6,6 +6,12 @@ export default async function NouvelleVentePage() {
   // 1. Récupère les données brutes depuis Prisma
   const clientsRaw = await prisma.client.findMany({
     orderBy: { nom: "asc" },
+    include: {
+      affiliations: {
+        include: { organisation: true },
+        orderBy: { dateDebut: "desc" },
+      },
+    },
   });
 
   const produitsRaw = await prisma.produit.findMany({
